@@ -16,4 +16,9 @@ helm repo update
 helm install your-release mojo2600/pihole -f k8s/helm/pihole-values.yml
 ```
 
+### Postgresql
+
+```shell
+helm install my-release oci://registry-1.docker.io/bitnamicharts/postgresql -f psql-values.yml
+```
 

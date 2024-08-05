@@ -11,6 +11,8 @@ kanban-plugin: board
 - [ ] New ethernet cable
 - [ ] Add private docker repository
 - [ ] Add backup path to longhorn
+- [ ] Edit longhorn service to use metallb
+- [ ] Deploy paperless-ngx
 
 
 ## DOING

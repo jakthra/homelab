@@ -1,0 +1,4 @@
+primary:
+  service:
+    type: LoadBalancer
+    loadBalancerIP: 10.0.0.102
