@@ -1,7 +1,8 @@
 module "k8s_manifests" {
   source = "./modules/k8s-manifests"
   
-  namespace_name = var.namespace_name
+  namespace_name        = var.namespace_name
+  postgres_credentials  = var.postgres_credentials
 }
 
 module "helm_releases" {

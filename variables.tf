@@ -9,3 +9,16 @@ variable "pihole_values_path" {
   type        = string
   default     = "helm-charts/pihole/values.yml"
 }
+
+variable "postgres_credentials" {
+  description = "PostgreSQL user credentials"
+  type = object({
+    username = string
+    password = string
+  })
+  sensitive = true
+  default = {
+    username = "cluster"
+    password = "cluster"  # Change this in secrets.tfvars
+  }
+}
