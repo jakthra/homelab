@@ -1,0 +1,10 @@
+.terraform/providers/registry.opentofu.org/hashicorp/helm/2.16.1/linux_amd64/CHANGELOG_GUIDE.md
+.terraform/providers/registry.opentofu.org/hashicorp/helm/2.16.1/linux_amd64/CHANGELOG.md
+.terraform/providers/registry.opentofu.org/hashicorp/helm/2.16.1/linux_amd64/LICENSE
+.terraform/providers/registry.opentofu.org/hashicorp/helm/2.16.1/linux_amd64/README.md
+.terraform/providers/registry.opentofu.org/hashicorp/helm/2.16.1/linux_amd64/terraform-provider-helm
+.terraform/providers/registry.opentofu.org/hashicorp/kubernetes/2.33.0/linux_amd64/CHANGELOG_GUIDE.md
+.terraform/providers/registry.opentofu.org/hashicorp/kubernetes/2.33.0/linux_amd64/CHANGELOG.md
+.terraform/providers/registry.opentofu.org/hashicorp/kubernetes/2.33.0/linux_amd64/LICENSE
+.terraform/providers/registry.opentofu.org/hashicorp/kubernetes/2.33.0/linux_amd64/README.md
+.terraform/providers/registry.opentofu.org/hashicorp/kubernetes/2.33.0/linux_amd64/terraform-provider-kubernetes

@@ -1,3 +1,9 @@
+dnsmasq:
+  customDnsEntries:
+    - address=/pihole.home.io/10.0.0.101
+    - address=/postgres.home.io/10.0.0.102
+
+
 persistentVolumeClaim:
   enabled: true
 
