@@ -1,23 +1,14 @@
-module "namespace" {
+module "k8s_manifests" {
   source = "./modules/k8s-manifests"
   
   namespace_name = var.namespace_name
 }
 
-module "pihole" {
+module "helm_releases" {
   source = "./modules/helm-releases"
   
-  namespace_name = module.namespace.namespace_name
-  release_config = var.pihole_config
+  namespace_name     = module.k8s_manifests.namespace_name
+  pihole_values_path = var.pihole_values_path
 
-  depends_on = [module.namespace]
-}
-
-module "postgresql" {
-  source = "./modules/helm-releases"
-  
-  namespace_name = module.namespace.namespace_name
-  release_config = var.postgresql_config
-
-  depends_on = [module.namespace, module.pihole]
+  depends_on = [module.k8s_manifests]
 }

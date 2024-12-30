@@ -8,3 +8,6 @@
 .terraform/providers/registry.opentofu.org/hashicorp/kubernetes/2.33.0/linux_amd64/LICENSE
 .terraform/providers/registry.opentofu.org/hashicorp/kubernetes/2.33.0/linux_amd64/README.md
 .terraform/providers/registry.opentofu.org/hashicorp/kubernetes/2.33.0/linux_amd64/terraform-provider-kubernetes
+secrets.tfvars
+*.auto.tfvars
+secrets.tfvars

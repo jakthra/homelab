@@ -1,5 +1,5 @@
 variable "namespace_name" {
-  description = "The name of the namespace to create"
+  description = "The namespace to create"
   type        = string
 }
 

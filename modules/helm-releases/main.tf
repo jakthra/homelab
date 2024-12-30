@@ -1,29 +1,20 @@
 variable "namespace_name" {
-  description = "Namespace to install the release into"
+  description = "The namespace to deploy to"
   type        = string
 }
 
-variable "release_config" {
-  description = "Configuration for the Helm release"
-  type = object({
-    name       = string
-    repository = string
-    chart      = string
-    version    = string
-    values     = optional(string)
-    depends_on = list(string)
-  })
+variable "pihole_values_path" {
+  description = "Path to PiHole values file"
+  type        = string
 }
 
-resource "helm_release" "release" {
-  name       = var.release_config.name
-  repository = var.release_config.repository
-  chart      = var.release_config.chart
-  version    = var.release_config.version
+resource "helm_release" "pihole" {
+  name       = "pihole"
+  repository = "https://mojo2600.github.io/pihole-kubernetes/"
+  chart      = "pihole"
   namespace  = var.namespace_name
-  values     = var.release_config.values != null ? [file(var.release_config.values)] : []
-}
-
-output "release_name" {
-  value = helm_release.release.name
+  
+  values = [
+    file(var.pihole_values_path)
+  ]
 }
