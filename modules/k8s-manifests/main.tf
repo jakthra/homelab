@@ -30,6 +30,18 @@ resource "kubernetes_secret" "postgres_credentials" {
   }
 }
 
+resource "kubernetes_secret" "paperless_postgres_credentials" {
+  metadata {
+    name      = "paperless-postgres-credentials"
+    namespace = kubernetes_namespace.namespace.metadata[0].name
+  }
+
+  data = {
+    username = "paperless"
+    password = "paperless"
+  }
+}
+
 resource "kubernetes_manifest" "postgres_cluster" {
   manifest = {
     apiVersion = "postgresql.cnpg.io/v1"
@@ -48,10 +60,10 @@ resource "kubernetes_manifest" "postgres_cluster" {
       }
       bootstrap = {
         initdb = {
-          database = "app"
-          owner    = var.postgres_credentials.username
+          database = "paperless"
+          owner    = "paperless"
           secret = {
-            name = kubernetes_secret.postgres_credentials.metadata[0].name
+            name = kubernetes_secret.paperless_postgres_credentials.metadata[0].name
           }
         }
       }
@@ -65,6 +77,14 @@ resource "kubernetes_manifest" "postgres_cluster" {
             }
             login = true
             superuser = true
+          },
+          {
+            name = "paperless"
+            ensure = "present"
+            passwordSecret = {
+              name =  "paperless-postgres-credentials"    
+            }
+            login = true
           }
         ]
       #   services = {
@@ -92,6 +112,102 @@ resource "kubernetes_manifest" "postgres_cluster" {
 
   depends_on = [kubernetes_namespace.namespace, kubernetes_secret.postgres_credentials]
 }
+
+resource "kubernetes_persistent_volume_claim" "data_pvc" {
+  metadata {
+    name      = "data-pvc"
+    namespace = "home"
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "1Gi"
+      }
+    }
+  }
+}
+
+resource "kubernetes_persistent_volume_claim" "media_pvc" {
+  metadata {
+    name      = "media-pvc"
+    namespace = "home"
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "1.5Gi"
+      }
+    }
+  }
+}
+
+resource "kubernetes_persistent_volume_claim" "export_pvc" {
+  metadata {
+    name      = "export-pvc"
+    namespace = "home"
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "1Gi"
+      }
+    }
+  }
+}
+
+resource "kubernetes_persistent_volume_claim" "consume_pvc" {
+  metadata {
+    name      = "consume-pvc"
+    namespace = "home"
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "1Gi"
+      }
+    }
+  }
+}
+
+resource "kubernetes_manifest" "paperless" {
+  manifest = yamldecode(file("k8s/paperless-redis.deployment.yml"))
+  depends_on = [ kubernetes_persistent_volume_claim.data_pvc, kubernetes_persistent_volume_claim.media_pvc, kubernetes_persistent_volume_claim.export_pvc, kubernetes_persistent_volume_claim.consume_pvc ]
+}
+
+resource "kubernetes_service" "paperless_service" {
+  metadata {
+    name      = "paperless-ngx"
+    namespace = "home"
+    annotations = {
+      "metallb.universe.tf/loadBalancerIPs" = "10.0.0.103"
+    }
+  }
+
+  spec {
+    selector = {
+      app = "paperless-ngx"
+    }
+
+    port {
+      port        = 80
+      target_port = 8000
+      protocol    = "TCP"
+    }
+
+    type = "LoadBalancer"
+  }
+
+  depends_on = [ kubernetes_manifest.paperless ]
+}
+
 
 output "namespace_name" {
   value = kubernetes_namespace.namespace.metadata[0].name

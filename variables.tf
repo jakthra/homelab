@@ -10,6 +10,12 @@ variable "pihole_values_path" {
   default     = "helm-charts/pihole/values.yml"
 }
 
+variable "redis_values_path" {
+  description = "Path to redis values file"
+  type        = string
+  default     = "helm-charts/redis/values.yml"
+}
+
 variable "postgres_credentials" {
   description = "PostgreSQL user credentials"
   type = object({

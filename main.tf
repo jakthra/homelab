@@ -10,6 +10,7 @@ module "helm_releases" {
   
   namespace_name     = module.k8s_manifests.namespace_name
   pihole_values_path = var.pihole_values_path
+  redis_values_path = var.redis_values_path
 
   depends_on = [module.k8s_manifests]
 }

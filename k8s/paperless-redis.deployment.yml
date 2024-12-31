@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+  namespace: home
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless-ngx
+  template:
+    metadata:
+      labels:
+        app: paperless-ngx
+    spec:
+      containers:
+        - name: webserver
+          image: ghcr.io/paperless-ngx/paperless-ngx:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: PAPERLESS_REDIS
+              value: "redis://redis-master:6379"
+            - name: PAPERLESS_DBHOST
+              value: "postgres-cluster-rw"
+          volumeMounts:
+            - name: data
+              mountPath: /usr/src/paperless/data
+            - name: media
+              mountPath: /usr/src/paperless/media
+            - name: export
+              mountPath: /usr/src/paperless/export
+            - name: consume
+              mountPath: /usr/src/paperless/consume
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: media-pvc
+        - name: export
+          persistentVolumeClaim:
+            claimName: export-pvc
+        - name: consume
+          persistentVolumeClaim:
+            claimName: consume-pvc

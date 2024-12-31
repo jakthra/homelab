@@ -8,6 +8,11 @@ variable "pihole_values_path" {
   type        = string
 }
 
+variable "redis_values_path" {
+  description = "Path to redis values file"
+  type        = string
+}
+
 resource "helm_release" "pihole" {
   name       = "pihole"
   repository = "https://mojo2600.github.io/pihole-kubernetes/"
@@ -43,8 +48,29 @@ resource "helm_release" "prometheus_alt" {
   chart      = "kube-prometheus-stack"
 
   values = [
-    data.http.kube_stack_config.response_body
+    data.http.kube_stack_config.response_body,
+    yamlencode({
+      grafana = {
+        service = {
+          type = "LoadBalancer"
+          annotations = {
+            "metallb.universe.tf/loadBalancerIPs" = "10.0.0.104"
+          }
+        }
+      }
+    })
   ]
 
   depends_on = [helm_release.cnpg]
+}
+
+
+resource "helm_release" "redis" {
+  name      = "redis"
+  repository = "oci://registry-1.docker.io/bitnamicharts"
+  chart = "redis"
+  namespace = var.namespace_name
+    values = [
+    file(var.redis_values_path)
+  ]
 }
